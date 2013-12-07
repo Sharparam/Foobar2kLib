@@ -51,8 +51,6 @@ namespace Sharparam.Foobar2kLib
 
         public string Host { get; private set; }
 
-        public bool IsConnected { get; private set; }
-
         public MessageManager MessageManager { get; private set; }
 
         public ushort Port { get; private set; }
