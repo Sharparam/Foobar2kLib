@@ -56,9 +56,7 @@ namespace Sharparam.Foobar2kLib.Tester
                             songMsg.Type,
                             songMsg.Song.Title,
                             songMsg.Song.Artist,
-// ReSharper disable PossibleNullReferenceException
-                            plMsg == null ? paMsg == null ? sMsg.SongIndex : paMsg.SongIndex : plMsg.SongIndex);
-// ReSharper restore PossibleNullReferenceException
+                            plMsg == null ? paMsg == null ? sMsg == null ? -1 : sMsg.SongIndex : paMsg.SongIndex : plMsg.SongIndex);
                     }
                 };
             };
