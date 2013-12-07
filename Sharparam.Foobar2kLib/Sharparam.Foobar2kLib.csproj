@@ -46,11 +46,14 @@
     <Compile Include="Messages\PausedMessage.cs" />
     <Compile Include="Messages\PlayingMessage.cs" />
     <Compile Include="Messages\PlaylistCountMessage.cs" />
-    <Compile Include="Messages\PlaylistEntryMessage.cs" />
-    <Compile Include="Messages\PlaylistEntryPlayingMessage.cs" />
     <Compile Include="Messages\PlaylistInfoMessage.cs" />
+    <Compile Include="Messages\PlaylistSongCountMessage.cs" />
+    <Compile Include="Messages\PlaylistSongMessage.cs" />
+    <Compile Include="Messages\PlaylistSongPlayingMessage.cs" />
+    <Compile Include="Messages\PlaylistInfoPlayingMessage.cs" />
     <Compile Include="Messages\QueueCountMessage.cs" />
     <Compile Include="Messages\QueueEntryMessage.cs" />
+    <Compile Include="Messages\SongMessage.cs" />
     <Compile Include="Messages\StoppedMessage.cs" />
     <Compile Include="Messages\VolumeMessage.cs" />
     <Compile Include="MessageType.cs" />

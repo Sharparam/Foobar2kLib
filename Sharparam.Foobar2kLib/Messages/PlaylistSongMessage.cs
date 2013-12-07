@@ -1,4 +1,4 @@
-﻿// <copyright file="PlaylistEntryMessage.cs" company="Adam Hellberg">
+﻿// <copyright file="PlaylistSongMessage.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -23,15 +23,15 @@ using System.Text.RegularExpressions;
 
 namespace Sharparam.Foobar2kLib.Messages
 {
-    public class PlaylistEntryMessage : Message
+    public class PlaylistSongMessage : Message
     {
         public readonly int PlaylistIndex;
         public readonly Song Song;
         public readonly int SongIndex;
         private const string MessageRegexFormat = @"(\d+)\{0}(\d+)\{0}(.+)";
 
-        internal PlaylistEntryMessage(string content, string separator, SongParser parser)
-            : base(MessageType.PlaylistEntry, content)
+        internal PlaylistSongMessage(string content, string separator, SongParser parser)
+            : base(MessageType.PlaylistSong, content)
         {
             var messageRegex = new Regex(string.Format(MessageRegexFormat, separator), RegexOptions.IgnoreCase);
 

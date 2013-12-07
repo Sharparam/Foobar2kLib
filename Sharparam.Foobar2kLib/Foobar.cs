@@ -22,6 +22,7 @@
 using System;
 using System.IO;
 using System.Net.Sockets;
+using Sharparam.Foobar2kLib.Events;
 using Sharparam.Foobar2kLib.Networking;
 
 namespace Sharparam.Foobar2kLib
@@ -66,15 +67,19 @@ namespace Sharparam.Foobar2kLib
         {
             ((TcpClient)result.AsyncState).EndConnect(result);
 
-            OnConnected();
-
             // Set up stream and start listening
             _controlserverStream = _controlserverClient.GetStream();
 
             MessageManager = new MessageManager(_controlserverStream, _songParser, _settings);
-            MessageManager.RawMessageReceived += (sender, args) => Console.WriteLine("<<< {0}", args.Data);
-            MessageManager.MessageSent += (sender, args) => Console.WriteLine(">>> {0}", args.Data);
+            MessageManager.MessageReceived += MessageManagerOnMessageReceived;
             MessageManager.StartRead();
+
+            OnConnected();
+        }
+
+        private void MessageManagerOnMessageReceived(object sender, MessageEventArgs args)
+        {
+            // TODO: Raise relevant events here
         }
     }
 }

@@ -20,14 +20,48 @@
 // </copyright>
 
 using System;
+using Sharparam.Foobar2kLib.Messages;
 
 namespace Sharparam.Foobar2kLib.Tester
 {
-    internal class Program
+    internal static class Program
     {
         private static void Main()
         {
-            var foobar = new Foobar();
+            Console.Title = "Foobar2kLib Tester";
+
+            var foobar = new Foobar(
+                "127.0.0.1",
+                3333,
+                "%codec%|%bitrate%|$if(%album artist%,%album artist%,%artist%)|%album%|%date%|%genre%|%tracknumber%|%title%",
+                "|");
+
+            foobar.Connected += (s, a) =>
+            {
+                foobar.MessageManager.MessageReceived += (sender, args) =>
+                {
+                    var msg = args.Message;
+
+                    var songMsg = msg as SongMessage;
+
+                    if (songMsg == null)
+                        Console.WriteLine("{0}: {1}", msg.Type, msg.Content);
+                    else
+                    {
+                        var plMsg = songMsg as PlayingMessage;
+                        var paMsg = songMsg as PausedMessage;
+                        var sMsg = songMsg as StoppedMessage;
+                        Console.WriteLine(
+                            "{0} \"{1}\" ({3}) by {2}",
+                            songMsg.Type,
+                            songMsg.Song.Title,
+                            songMsg.Song.Artist,
+// ReSharper disable PossibleNullReferenceException
+                            plMsg == null ? paMsg == null ? sMsg.SongIndex : paMsg.SongIndex : plMsg.SongIndex);
+// ReSharper restore PossibleNullReferenceException
+                    }
+                };
+            };
 
             while (true)
             {

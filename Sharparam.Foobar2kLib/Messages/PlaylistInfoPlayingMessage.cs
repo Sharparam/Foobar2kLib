@@ -1,4 +1,4 @@
-﻿// <copyright file="PlaylistEntryPlayingMessage.cs" company="Adam Hellberg">
+﻿// <copyright file="PlaylistInfoPlayingMessage.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -19,27 +19,29 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-using System.Text.RegularExpressions;
+using System;
 
 namespace Sharparam.Foobar2kLib.Messages
 {
-    public class PlaylistEntryPlayingMessage : Message
+    public class PlaylistInfoPlayingMessage : Message
     {
         public readonly int PlaylistIndex;
-        public readonly Song Song;
-        public readonly int SongIndex;
-        private const string MessageRegexFormat = @"(\d+)\{0}(\d+)\{0}(.+)";
+        public readonly string PlaylistName;
+        public readonly int TrackCount;
 
-        internal PlaylistEntryPlayingMessage(string content, string separator, SongParser parser)
-            : base(MessageType.PlaylistEntryPlaying, content)
+        internal PlaylistInfoPlayingMessage(string content, string separator)
+            : base(MessageType.PlaylistInfoPlaying, content)
         {
-            var messageRegex = new Regex(string.Format(MessageRegexFormat, separator), RegexOptions.IgnoreCase);
+            var fields = content.Split(new[] { separator }, StringSplitOptions.None);
 
-            var match = messageRegex.Match(content);
+            // First field is playlist index
+            PlaylistIndex = int.Parse(fields[0]);
 
-            PlaylistIndex = int.Parse(match.Groups[1].Value);
-            SongIndex = int.Parse(match.Groups[2].Value);
-            Song = parser.ParseSong(match.Groups[3].Value);
+            // Second field is playlist name
+            PlaylistName = fields[1];
+
+            // Third field is number of tracks in the playlist
+            TrackCount = int.Parse(fields[2]);
         }
     }
 }

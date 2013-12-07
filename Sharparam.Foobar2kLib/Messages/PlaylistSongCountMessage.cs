@@ -1,4 +1,4 @@
-﻿// <copyright file="PlaylistCountMessage.cs" company="Adam Hellberg">
+﻿// <copyright file="PlaylistSongCountMessage.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -19,16 +19,25 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
+using System;
+
 namespace Sharparam.Foobar2kLib.Messages
 {
-    public class PlaylistCountMessage : Message
+    public class PlaylistSongCountMessage : Message
     {
-        public readonly int Count;
+        public readonly int PlaylistIndex;
+        public readonly int TrackCount;
 
-        internal PlaylistCountMessage(string content)
-            : base(MessageType.PlaylistCount, content)
+        internal PlaylistSongCountMessage(string content, string separator)
+            : base(MessageType.PlaylistSongCount, content)
         {
-            Count = int.Parse(content);
+            var fields = content.Split(new[] { separator }, StringSplitOptions.None);
+
+            // First field is playlist ID/index
+            PlaylistIndex = int.Parse(fields[0]);
+
+            // Second field is number of tracks
+            TrackCount = int.Parse(fields[1]);
         }
     }
 }

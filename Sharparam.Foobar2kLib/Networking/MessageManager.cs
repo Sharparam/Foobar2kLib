@@ -133,20 +133,20 @@ namespace Sharparam.Foobar2kLib.Networking
                         messageObject = new OrderMessage(messageContent);
                         break;
 
-                    case MessageType.PlaylistInfo:
-                        messageObject = new PlaylistInfoMessage(messageContent, _settings.Separator);
+                    case MessageType.PlaylistInfoPlaying:
+                        messageObject = new PlaylistInfoPlayingMessage(messageContent, _settings.Separator);
                         break;
 
-                    case MessageType.PlaylistCount:
-                        messageObject = new PlaylistCountMessage(messageContent, _settings.Separator);
+                    case MessageType.PlaylistSongCount:
+                        messageObject = new PlaylistSongCountMessage(messageContent, _settings.Separator);
                         break;
 
-                    case MessageType.PlaylistEntry:
-                        messageObject = new PlaylistEntryMessage(messageContent, _settings.Separator, _parser);
+                    case MessageType.PlaylistSong:
+                        messageObject = new PlaylistSongMessage(messageContent, _settings.Separator, _parser);
                         break;
 
-                    case MessageType.PlaylistEntryPlaying:
-                        messageObject = new PlaylistEntryPlayingMessage(messageContent, _settings.Separator, _parser);
+                    case MessageType.PlaylistSongPlaying:
+                        messageObject = new PlaylistSongPlayingMessage(messageContent, _settings.Separator, _parser);
                         break;
 
                     case MessageType.QueueCount:
