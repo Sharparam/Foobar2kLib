@@ -21,19 +21,19 @@
 
 namespace Sharparam.Foobar2kLib
 {
-    public class Settings
+    internal class Settings
     {
-        public const string DefaultFile = "settings.xml";
+        internal const string DefaultFile = "settings.xml";
 
-        public readonly string Format;
+        internal readonly string Format;
 
-        public readonly string Host;
+        internal readonly string Host;
 
-        public readonly ushort Port;
+        internal readonly ushort Port;
 
-        public readonly string Separator;
+        internal readonly string Separator;
 
-        public Settings(
+        internal Settings(
             string host = "127.0.0.1",
             ushort port = 3333,
             string format = SongParser.DefaultFormat,
