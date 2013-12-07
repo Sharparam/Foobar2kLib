@@ -23,12 +23,12 @@ using System.Text.RegularExpressions;
 
 namespace Sharparam.Foobar2kLib.Messages
 {
-    public class PlaylistSongMessage : Message
+    public class PlaylistSongMessage : SongMessage
     {
         public readonly int PlaylistIndex;
-        public readonly Song Song;
         public readonly int SongIndex;
         private const string MessageRegexFormat = @"(\d+)\{0}(\d+)\{0}(.+)";
+        private readonly Song _song;
 
         internal PlaylistSongMessage(string content, string separator, SongParser parser)
             : base(MessageType.PlaylistSong, content)
@@ -39,7 +39,12 @@ namespace Sharparam.Foobar2kLib.Messages
 
             PlaylistIndex = int.Parse(match.Groups[1].Value);
             SongIndex = int.Parse(match.Groups[2].Value);
-            Song = parser.ParseSong(match.Groups[3].Value);
+            _song = parser.ParseSong(match.Groups[3].Value);
+        }
+
+        public override Song Song
+        {
+            get { return _song; }
         }
     }
 }
