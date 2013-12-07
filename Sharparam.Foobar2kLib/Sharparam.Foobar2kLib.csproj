@@ -53,6 +53,9 @@
     <Compile Include="Messages\PlaylistInfoPlayingMessage.cs" />
     <Compile Include="Messages\QueueCountMessage.cs" />
     <Compile Include="Messages\QueueEntryMessage.cs" />
+    <Compile Include="Messages\SearchResultCountMessage.cs" />
+    <Compile Include="Messages\SearchResultEntryMessage.cs" />
+    <Compile Include="Messages\SearchResultEntryPlayingMessage.cs" />
     <Compile Include="Messages\SongMessage.cs" />
     <Compile Include="Messages\StoppedMessage.cs" />
     <Compile Include="Messages\VolumeMessage.cs" />
