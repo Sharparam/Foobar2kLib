@@ -20,7 +20,6 @@
 // </copyright>
 
 using System;
-using System.IO;
 using System.Net.Sockets;
 using Sharparam.Foobar2kLib.Events;
 using Sharparam.Foobar2kLib.Networking;
@@ -56,6 +55,11 @@ namespace Sharparam.Foobar2kLib
 
         public ushort Port { get; private set; }
 
+        private void MessageManagerOnMessageReceived(object sender, MessageEventArgs args)
+        {
+            // TODO: Raise relevant events here
+        }
+
         private void OnConnected()
         {
             var fun = Connected;
@@ -75,11 +79,6 @@ namespace Sharparam.Foobar2kLib
             MessageManager.StartRead();
 
             OnConnected();
-        }
-
-        private void MessageManagerOnMessageReceived(object sender, MessageEventArgs args)
-        {
-            // TODO: Raise relevant events here
         }
     }
 }
