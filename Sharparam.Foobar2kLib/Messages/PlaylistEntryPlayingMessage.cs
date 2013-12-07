@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Sharparam.Foobar2kLib.Messages
 {
     public class PlaylistEntryPlayingMessage : Message
     {
         public readonly int PlaylistIndex;
-        public readonly int SongIndex;
         public readonly Song Song;
-
+        public readonly int SongIndex;
         private const string MessageRegexFormat = @"(\d+)\{0}(\d+)\{0}(.+)";
 
-        internal PlaylistEntryMessage(string content, string separator, SongParser parser) : base(MessageType.PlaylistEntryPlaying, content)
+        internal PlaylistEntryPlayingMessage(string content, string separator, SongParser parser)
+            : base(MessageType.PlaylistEntryPlaying, content)
         {
             var messageRegex = new Regex(string.Format(MessageRegexFormat, separator), RegexOptions.IgnoreCase);
 

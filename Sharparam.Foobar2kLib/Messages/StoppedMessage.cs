@@ -6,13 +6,13 @@ namespace Sharparam.Foobar2kLib.Messages
     public class StoppedMessage : Message
     {
         public readonly int PlaylistIndex;
+        public readonly Song Song;
         public readonly int SongIndex;
         public readonly float Time;
-        public readonly Song Song;
-
         private const string MessageRegexFormat = @"(\d+)\{0}(\d+)\{0}(\d+\.\d+)\{0}(.+)";
 
-        internal StoppedMessage(string content, string separator, SongParser parser) : base(MessageType.Stopped, content)
+        internal StoppedMessage(string content, string separator, SongParser parser)
+            : base(MessageType.Stopped, content)
         {
             var messageRegex = new Regex(string.Format(MessageRegexFormat, separator), RegexOptions.IgnoreCase);
 

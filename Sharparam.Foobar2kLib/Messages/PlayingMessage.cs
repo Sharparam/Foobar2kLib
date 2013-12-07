@@ -6,13 +6,13 @@ namespace Sharparam.Foobar2kLib.Messages
     public class PlayingMessage : Message
     {
         public readonly int PlaylistIndex;
+        public readonly Song Song;
         public readonly int SongIndex;
         public readonly float Time;
-        public readonly Song Song;
-
         private const string MessageRegexFormat = @"(\d+)\{0}(\d+)\{0}(\d+\.\d+)\{0}(.+)";
 
-        internal PlayingMessage(string content, string separator, SongParser parser) : base(MessageType.Playing, content)
+        internal PlayingMessage(string content, string separator, SongParser parser)
+            : base(MessageType.Playing, content)
         {
             var messageRegex = new Regex(string.Format(MessageRegexFormat, separator), RegexOptions.IgnoreCase);
 

@@ -4,14 +4,14 @@ namespace Sharparam.Foobar2kLib.Messages
 {
     public class QueueEntryMessage : Message
     {
-        public readonly int QueueIndex;
         public readonly int PlaylistIndex;
-        public readonly int SongIndex;
+        public readonly int QueueIndex;
         public readonly Song Song;
-
+        public readonly int SongIndex;
         private const string MessageRegexFormat = @"(\d+)\{0}(\d+)\{0}(\d+)\{0}(.+)";
 
-        internal QueueEntryMessage(string content, string separator, SongParser parser) : base(MessageType.QueueEntry, content)
+        internal QueueEntryMessage(string content, string separator, SongParser parser)
+            : base(MessageType.QueueEntry, content)
         {
             var messageRegex = new Regex(string.Format(MessageRegexFormat, separator), RegexOptions.IgnoreCase);
 

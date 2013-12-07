@@ -30,17 +30,13 @@ namespace Sharparam.Foobar2kLib
     {
         public const string DefaultFile = "settings.xml";
 
-        [XmlAttribute]
-        public string Format;
+        [XmlAttribute] public string Format;
 
-        [XmlAttribute]
-        public string Host;
+        [XmlAttribute] public string Host;
 
-        [XmlAttribute]
-        public ushort Port;
+        [XmlAttribute] public ushort Port;
 
-        [XmlAttribute]
-        public string Separator;
+        [XmlAttribute] public string Separator;
 
         public Settings(
             string host = "127.0.0.1",
