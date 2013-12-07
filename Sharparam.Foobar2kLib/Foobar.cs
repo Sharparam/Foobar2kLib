@@ -34,15 +34,9 @@ namespace Sharparam.Foobar2kLib
 
         private NetworkStream _controlserverStream;
 
-        public Foobar()
+        public Foobar(string host, ushort port, string format, string separator)
         {
-            if (File.Exists(Settings.DefaultFile))
-                _settings = Settings.Load();
-            else
-            {
-                _settings = new Settings();
-                _settings.Save();
-            }
+            _settings = new Settings(host, port, format, separator);
 
             Host = _settings.Host;
             Port = _settings.Port;

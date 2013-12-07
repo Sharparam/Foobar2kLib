@@ -19,24 +19,19 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-using System;
-using System.IO;
-using System.Xml.Serialization;
-
 namespace Sharparam.Foobar2kLib
 {
-    [Serializable]
     public class Settings
     {
         public const string DefaultFile = "settings.xml";
 
-        [XmlAttribute] public string Format;
+        public readonly string Format;
 
-        [XmlAttribute] public string Host;
+        public readonly string Host;
 
-        [XmlAttribute] public ushort Port;
+        public readonly ushort Port;
 
-        [XmlAttribute] public string Separator;
+        public readonly string Separator;
 
         public Settings(
             string host = "127.0.0.1",
@@ -48,22 +43,6 @@ namespace Sharparam.Foobar2kLib
             Port = port;
             Format = format;
             Separator = separator;
-        }
-
-        private Settings()
-        {
-        }
-
-        public static Settings Load(string file = DefaultFile)
-        {
-            using (var reader = new StreamReader(file))
-                return new XmlSerializer(typeof(Settings)).Deserialize(reader) as Settings;
-        }
-
-        public void Save(string file = DefaultFile)
-        {
-            using (var writer = new StreamWriter(file))
-                new XmlSerializer(typeof(Settings)).Serialize(writer, this);
         }
     }
 }
