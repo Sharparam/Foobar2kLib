@@ -46,15 +46,49 @@ namespace Sharparam.Foobar2kLib.Networking
             _settings = settings;
         }
 
+        public event EventHandler<InfoMessageEventArgs> InfoMessageReceived;
+
         public event EventHandler<MessageEventArgs> MessageReceived;
 
         public event EventHandler<StringEventArgs> MessageSent;
 
+        public event EventHandler<OrderMessageEventArgs> OrderMessageReceived;
+
+        public event EventHandler<PausedMessageEventArgs> PausedMessageReceived;
+
+        public event EventHandler<PlayingMessageEventArgs> PlayingMessageReceived;
+
+        public event EventHandler<PlaylistCountMessageEventArgs> PlaylistCountMessageReceived;
+
+        public event EventHandler<PlaylistInfoMessageEventArgs> PlaylistInfoMessageReceived;
+
+        public event EventHandler<PlaylistInfoPlayingMessageEventArgs> PlaylistInfoPlayingMessageReceived;
+
+        public event EventHandler<PlaylistSongCountMessageEventArgs> PlaylistSongCountMessageReceived;
+
+        public event EventHandler<PlaylistSongMessageEventArgs> PlaylistSongMessageReceived;
+
+        public event EventHandler<PlaylistSongPlayingMessageEventArgs> PlaylistSongPlayingMessageReceived;
+
+        public event EventHandler<QueueCountMessageEventArgs> QueueCountMessageReceived;
+
+        public event EventHandler<QueueEntryMessageEventArgs> QueueEntryMessageReceived;
+
         public event EventHandler<StringEventArgs> RawMessageReceived;
 
-        public void WriteMessage(string message)
+        public event EventHandler<SearchResultCountMessageEventArgs> SearchResultCountMessageReceived;
+
+        public event EventHandler<SearchResultEntryMessageEventArgs> SearchResultEntryMessageReceived;
+
+        public event EventHandler<SearchResultEntryPlayingMessageEventArgs> SearchResultEntryPlayingMessageReceived;
+
+        public event EventHandler<StoppedMessageEventArgs> StoppedMessageReceived;
+
+        public event EventHandler<VolumeMessageEventArgs> VolumeMessageReceived;
+
+        public void WriteMessage(string format, params object[] args)
         {
-            _sendMessage = message;
+            _sendMessage = string.Format(format, args);
 
             if (!_sendMessage.EndsWith("\r\n"))
                 _sendMessage = _sendMessage += "\r\n";
@@ -67,6 +101,13 @@ namespace Sharparam.Foobar2kLib.Networking
         {
             _readBuffer = new byte[4096];
             _stream.BeginRead(_readBuffer, 0, _readBuffer.Length, OnStreamRead, _stream);
+        }
+
+        private void OnInfoMessageReceived(InfoMessage message)
+        {
+            var fun = InfoMessageReceived;
+            if (fun != null)
+                fun(this, new InfoMessageEventArgs(message));
         }
 
         private void OnMessageReceived(Message message)
@@ -83,11 +124,116 @@ namespace Sharparam.Foobar2kLib.Networking
                 fun(this, new StringEventArgs(message));
         }
 
+        private void OnOrderMessageReceived(OrderMessage message)
+        {
+            var fun = OrderMessageReceived;
+            if (fun != null)
+                fun(this, new OrderMessageEventArgs(message));
+        }
+
+        private void OnPausedMessageReceived(PausedMessage message)
+        {
+            var fun = PausedMessageReceived;
+            if (fun != null)
+                fun(this, new PausedMessageEventArgs(message));
+        }
+
+        private void OnPlayingMessageReceived(PlayingMessage message)
+        {
+            var fun = PlayingMessageReceived;
+            if (fun != null)
+                fun(this, new PlayingMessageEventArgs(message));
+        }
+
+        private void OnPlaylistCountMessageReceived(PlaylistCountMessage message)
+        {
+            var fun = PlaylistCountMessageReceived;
+            if (fun != null)
+                fun(this, new PlaylistCountMessageEventArgs(message));
+        }
+
+        private void OnPlaylistInfoMessageReceived(PlaylistInfoMessage message)
+        {
+            var fun = PlaylistInfoMessageReceived;
+            if (fun != null)
+                fun(this, new PlaylistInfoMessageEventArgs(message));
+        }
+
+        private void OnPlaylistInfoPlayingMessageReceived(PlaylistInfoPlayingMessage message)
+        {
+            var fun = PlaylistInfoPlayingMessageReceived;
+            if (fun != null)
+                fun(this, new PlaylistInfoPlayingMessageEventArgs(message));
+        }
+
+        private void OnPlaylistSongCountMessageReceived(PlaylistSongCountMessage message)
+        {
+            var fun = PlaylistSongCountMessageReceived;
+            if (fun != null)
+                fun(this, new PlaylistSongCountMessageEventArgs(message));
+        }
+
+        private void OnPlaylistSongMessageReceived(PlaylistSongMessage message)
+        {
+            var fun = PlaylistSongMessageReceived;
+            if (fun != null)
+                fun(this, new PlaylistSongMessageEventArgs(message));
+        }
+
+        private void OnPlaylistSongPlayingMessageReceived(PlaylistSongPlayingMessage message)
+        {
+            var fun = PlaylistSongPlayingMessageReceived;
+            if (fun != null)
+                fun(this, new PlaylistSongPlayingMessageEventArgs(message));
+        }
+
+        private void OnQueueCountMessageReceived(QueueCountMessage message)
+        {
+            var fun = QueueCountMessageReceived;
+            if (fun != null)
+                fun(this, new QueueCountMessageEventArgs(message));
+        }
+
+        private void OnQueueEntryMessageReceived(QueueEntryMessage message)
+        {
+            var fun = QueueEntryMessageReceived;
+            if (fun != null)
+                fun(this, new QueueEntryMessageEventArgs(message));
+        }
+
         private void OnRawMessageReceived(string message)
         {
             var fun = RawMessageReceived;
             if (fun != null)
                 fun(this, new StringEventArgs(message));
+        }
+
+        private void OnSearchResultCountMessageReceived(SearchResultCountMessage message)
+        {
+            var fun = SearchResultCountMessageReceived;
+            if (fun != null)
+                fun(this, new SearchResultCountMessageEventArgs(message));
+        }
+
+        private void OnSearchResultEntryMessageReceived(SearchResultEntryMessage message)
+        {
+            var fun = SearchResultEntryMessageReceived;
+            if (fun != null)
+                fun(this, new SearchResultEntryMessageEventArgs(message));
+        }
+
+        private void OnSearchResultEntryPlayingMessageReceived(SearchResultEntryPlayingMessage message)
+        {
+            var fun = SearchResultEntryPlayingMessageReceived;
+            if (fun != null)
+                fun(this, new SearchResultEntryPlayingMessageEventArgs(message));
+        }
+
+        private void OnStoppedMessageReceived(StoppedMessage message)
+        {
+            var fun = StoppedMessageReceived;
+            if (fun != null)
+                fun(this, new StoppedMessageEventArgs(message));
         }
 
         private void OnStreamRead(IAsyncResult result)
@@ -109,64 +255,87 @@ namespace Sharparam.Foobar2kLib.Networking
 
                 var messageType = (MessageType)messageId;
 
-                Message messageObject;
+                var messageObject = new Message(messageType, messageContent);
+
+                OnMessageReceived(messageObject);
 
                 switch (messageType)
                 {
                     case MessageType.Playing:
-                        messageObject = new PlayingMessage(messageContent, _settings.Separator, _parser);
+                        OnPlayingMessageReceived(new PlayingMessage(messageContent, _settings.Separator, _parser));
                         break;
 
                     case MessageType.Stopped:
-                        messageObject = new StoppedMessage(messageContent, _settings.Separator, _parser);
+                        OnStoppedMessageReceived(new StoppedMessage(messageContent, _settings.Separator, _parser));
                         break;
 
                     case MessageType.Paused:
-                        messageObject = new PausedMessage(messageContent, _settings.Separator, _parser);
+                        OnPausedMessageReceived(new PausedMessage(messageContent, _settings.Separator, _parser));
                         break;
 
                     case MessageType.Volume:
-                        messageObject = new VolumeMessage(messageContent);
+                        OnVolumeMessageReceived(new VolumeMessage(messageContent));
                         break;
 
                     case MessageType.Order:
-                        messageObject = new OrderMessage(messageContent);
+                        OnOrderMessageReceived(new OrderMessage(messageContent));
+                        break;
+
+                    case MessageType.PlaylistCount:
+                        OnPlaylistCountMessageReceived(new PlaylistCountMessage(messageContent));
+                        break;
+
+                    case MessageType.PlaylistInfo:
+                        OnPlaylistInfoMessageReceived(new PlaylistInfoMessage(messageContent, _settings.Separator));
                         break;
 
                     case MessageType.PlaylistInfoPlaying:
-                        messageObject = new PlaylistInfoPlayingMessage(messageContent, _settings.Separator);
+                        OnPlaylistInfoPlayingMessageReceived(
+                            new PlaylistInfoPlayingMessage(messageContent, _settings.Separator));
+                        break;
+
+                    case MessageType.SearchResultCount:
+                        OnSearchResultCountMessageReceived(
+                            new SearchResultCountMessage(messageContent, _settings.Separator));
+                        break;
+
+                    case MessageType.SearchResultEntry:
+                        OnSearchResultEntryMessageReceived(
+                            new SearchResultEntryMessage(messageContent, _settings.Separator, _parser));
+                        break;
+
+                    case MessageType.SearchResultEntryPlaying:
+                        OnSearchResultEntryPlayingMessageReceived(
+                            new SearchResultEntryPlayingMessage(messageContent, _settings.Separator, _parser));
                         break;
 
                     case MessageType.PlaylistSongCount:
-                        messageObject = new PlaylistSongCountMessage(messageContent, _settings.Separator);
+                        OnPlaylistSongCountMessageReceived(
+                            new PlaylistSongCountMessage(messageContent, _settings.Separator));
                         break;
 
                     case MessageType.PlaylistSong:
-                        messageObject = new PlaylistSongMessage(messageContent, _settings.Separator, _parser);
+                        OnPlaylistSongMessageReceived(
+                            new PlaylistSongMessage(messageContent, _settings.Separator, _parser));
                         break;
 
                     case MessageType.PlaylistSongPlaying:
-                        messageObject = new PlaylistSongPlayingMessage(messageContent, _settings.Separator, _parser);
+                        OnPlaylistSongPlayingMessageReceived(
+                            new PlaylistSongPlayingMessage(messageContent, _settings.Separator, _parser));
                         break;
 
                     case MessageType.QueueCount:
-                        messageObject = new QueueCountMessage(messageContent);
+                        OnQueueCountMessageReceived(new QueueCountMessage(messageContent));
                         break;
 
                     case MessageType.QueueEntry:
-                        messageObject = new QueueEntryMessage(messageContent, _settings.Separator, _parser);
+                        OnQueueEntryMessageReceived(new QueueEntryMessage(messageContent, _settings.Separator, _parser));
                         break;
 
                     case MessageType.Info:
-                        messageObject = new InfoMessage(messageContent);
-                        break;
-
-                    default:
-                        messageObject = new Message(messageType, messageContent);
+                        OnInfoMessageReceived(new InfoMessage(messageContent));
                         break;
                 }
-
-                OnMessageReceived(messageObject);
             }
 
             StartRead();
@@ -177,6 +346,13 @@ namespace Sharparam.Foobar2kLib.Networking
             ((Stream)result.AsyncState).EndWrite(result);
 
             OnMessageSent(_sendMessage);
+        }
+
+        private void OnVolumeMessageReceived(VolumeMessage message)
+        {
+            var fun = VolumeMessageReceived;
+            if (fun != null)
+                fun(this, new VolumeMessageEventArgs(message));
         }
     }
 }

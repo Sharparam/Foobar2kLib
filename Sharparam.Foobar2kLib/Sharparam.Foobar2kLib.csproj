@@ -38,8 +38,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\InfoMessageEventArgs.cs" />
     <Compile Include="Events\MessageEventArgs.cs" />
+    <Compile Include="Events\OrderMessageEventArgs.cs" />
+    <Compile Include="Events\PausedMessageEventArgs.cs" />
+    <Compile Include="Events\PlayingMessageEventArgs.cs" />
+    <Compile Include="Events\PlaylistCountMessageEventArgs.cs" />
+    <Compile Include="Events\PlaylistInfoMessageEventArgs.cs" />
+    <Compile Include="Events\PlaylistInfoPlayingMessageEventArgs.cs" />
+    <Compile Include="Events\PlaylistSongCountMessageEventArgs.cs" />
+    <Compile Include="Events\PlaylistSongMessageEventArgs.cs" />
+    <Compile Include="Events\PlaylistSongPlayingMessageEventArgs.cs" />
+    <Compile Include="Events\QueueCountMessageEventArgs.cs" />
+    <Compile Include="Events\QueueEntryMessageEventArgs.cs" />
+    <Compile Include="Events\SearchResultCountMessageEventArgs.cs" />
+    <Compile Include="Events\SearchResultEntryMessageEventArgs.cs" />
+    <Compile Include="Events\SearchResultEntryPlayingMessageEventArgs.cs" />
+    <Compile Include="Events\StoppedMessageEventArgs.cs" />
     <Compile Include="Events\StringEventArgs.cs" />
+    <Compile Include="Events\VolumeMessageEventArgs.cs" />
     <Compile Include="Messages\InfoMessage.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\OrderMessage.cs" />
@@ -60,6 +77,8 @@
     <Compile Include="Messages\StoppedMessage.cs" />
     <Compile Include="Messages\VolumeMessage.cs" />
     <Compile Include="Networking\MessageType.cs" />
+    <Compile Include="Playlist.cs" />
+    <Compile Include="Playlists.cs" />
     <Compile Include="Song.cs" />
     <Compile Include="SongParser.cs" />
     <Compile Include="Foobar.cs" />
