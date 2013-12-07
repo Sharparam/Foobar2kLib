@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharparam.Foobar2kLib", "Sharparam.Foobar2kLib\Sharparam.Foobar2kLib.csproj", "{073839AE-43D7-4CF0-B2A6-0F8913781F01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharparam.Foobar2kLib.Tester", "Sharparam.Foobar2kLib.Tester\Sharparam.Foobar2kLib.Tester.csproj", "{F8861BF9-1065-41B2-AB83-F834B4744051}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{073839AE-43D7-4CF0-B2A6-0F8913781F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{073839AE-43D7-4CF0-B2A6-0F8913781F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{073839AE-43D7-4CF0-B2A6-0F8913781F01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8861BF9-1065-41B2-AB83-F834B4744051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8861BF9-1065-41B2-AB83-F834B4744051}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8861BF9-1065-41B2-AB83-F834B4744051}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8861BF9-1065-41B2-AB83-F834B4744051}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
