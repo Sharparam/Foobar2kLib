@@ -30,7 +30,7 @@ namespace Sharparam.Foobar2kLib.Messages
         public readonly int TrackCount;
 
         internal PlaylistInfoMessage(string content, string separator)
-            : base(MessageType.PlaylistInfoPlaying, content)
+            : base(MessageType.PlaylistInfo, content)
         {
             var fields = content.Split(new[] { separator }, StringSplitOptions.None);
 
