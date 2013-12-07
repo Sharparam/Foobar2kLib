@@ -1,4 +1,4 @@
-﻿// <copyright file="MessageType.cs" company="Adam Hellberg">
+﻿// <copyright file="SearchResultCountMessage.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -19,26 +19,22 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace Sharparam.Foobar2kLib
+using System;
+
+namespace Sharparam.Foobar2kLib.Messages
 {
-    public enum MessageType
+    public class SearchResultCountMessage : Message
     {
-        Playing = 111,
-        Stopped = 112,
-        Paused = 113,
-        Volume = 222,
-        Order = 333,
-        PlaylistCount = 400,
-        PlaylistInfo = 401,
-        PlaylistInfoPlaying = 402,
-        SearchResultCount = 500,
-        SearchResultEntry = 501,
-        SearchResultEntryPlaying = 502,
-        PlaylistSongCount = 600,
-        PlaylistSong = 601,
-        PlaylistSongPlaying = 602,
-        QueueCount = 800,
-        QueueEntry = 801,
-        Info = 999
+        public readonly int Count;
+        public readonly int PlaylistIndex;
+
+        internal SearchResultCountMessage(string content, string separator)
+            : base(MessageType.SearchResultCount, content)
+        {
+            var fields = content.Split(new[] { separator }, StringSplitOptions.None);
+
+            PlaylistIndex = int.Parse(fields[0]);
+            Count = int.Parse(fields[1]);
+        }
     }
 }
