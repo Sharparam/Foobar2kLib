@@ -19,7 +19,7 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace Sharparam.Foobar2kLib
+namespace Sharparam.Foobar2kLib.Networking
 {
     public enum MessageType
     {

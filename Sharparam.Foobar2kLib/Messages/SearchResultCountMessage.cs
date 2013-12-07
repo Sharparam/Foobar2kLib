@@ -20,6 +20,7 @@
 // </copyright>
 
 using System;
+using Sharparam.Foobar2kLib.Networking;
 
 namespace Sharparam.Foobar2kLib.Messages
 {

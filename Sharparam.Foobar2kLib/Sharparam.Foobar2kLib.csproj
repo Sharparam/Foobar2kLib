@@ -59,7 +59,7 @@
     <Compile Include="Messages\SongMessage.cs" />
     <Compile Include="Messages\StoppedMessage.cs" />
     <Compile Include="Messages\VolumeMessage.cs" />
-    <Compile Include="MessageType.cs" />
+    <Compile Include="Networking\MessageType.cs" />
     <Compile Include="Song.cs" />
     <Compile Include="SongParser.cs" />
     <Compile Include="Foobar.cs" />

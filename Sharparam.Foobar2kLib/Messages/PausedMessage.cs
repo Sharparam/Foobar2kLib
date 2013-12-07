@@ -21,6 +21,7 @@
 
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Sharparam.Foobar2kLib.Networking;
 
 namespace Sharparam.Foobar2kLib.Messages
 {

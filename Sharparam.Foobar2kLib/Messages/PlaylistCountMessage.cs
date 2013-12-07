@@ -19,6 +19,8 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
+using Sharparam.Foobar2kLib.Networking;
+
 namespace Sharparam.Foobar2kLib.Messages
 {
     public class PlaylistCountMessage : Message
