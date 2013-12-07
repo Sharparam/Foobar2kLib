@@ -1,4 +1,4 @@
-﻿// <copyright file="StringEventArgs.cs" company="Adam Hellberg">
+﻿// <copyright file="PlaylistCountMessage.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -21,15 +21,23 @@
 
 using System;
 
-namespace Sharparam.Foobar2kLib.Events
+namespace Sharparam.Foobar2kLib.Messages
 {
-    public class StringEventArgs : EventArgs
+    public class PlaylistCountMessage : Message
     {
-        public readonly string Data;
+        public readonly int PlaylistIndex;
+        public readonly int TrackCount;
 
-        internal StringEventArgs(string data)
+        internal PlaylistCountMessage(string content, string separator)
+            : base(MessageType.PlaylistCount, content)
         {
-            Data = data;
+            var fields = content.Split(new[] { separator }, StringSplitOptions.None);
+
+            // First field is playlist ID/index
+            PlaylistIndex = int.Parse(fields[0]);
+
+            // Second field is number of tracks
+            TrackCount = int.Parse(fields[1]);
         }
     }
 }

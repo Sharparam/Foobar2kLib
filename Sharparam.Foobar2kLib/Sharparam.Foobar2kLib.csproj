@@ -38,10 +38,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\MessageEventArgs.cs" />
     <Compile Include="Events\StringEventArgs.cs" />
+    <Compile Include="Messages\InfoMessage.cs" />
+    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\OrderMessage.cs" />
+    <Compile Include="Messages\PausedMessage.cs" />
+    <Compile Include="Messages\PlayingMessage.cs" />
+    <Compile Include="Messages\PlaylistCountMessage.cs" />
+    <Compile Include="Messages\PlaylistEntryMessage.cs" />
+    <Compile Include="Messages\PlaylistEntryPlayingMessage.cs" />
+    <Compile Include="Messages\PlaylistInfoMessage.cs" />
+    <Compile Include="Messages\QueueCountMessage.cs" />
+    <Compile Include="Messages\QueueEntryMessage.cs" />
+    <Compile Include="Messages\StoppedMessage.cs" />
+    <Compile Include="Messages\VolumeMessage.cs" />
+    <Compile Include="MessageType.cs" />
+    <Compile Include="Song.cs" />
+    <Compile Include="SongParser.cs" />
     <Compile Include="Foobar.cs" />
     <Compile Include="Networking\MessageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

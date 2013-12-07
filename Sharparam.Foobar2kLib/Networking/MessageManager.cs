@@ -23,28 +23,35 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using Sharparam.Foobar2kLib.Events;
+using Sharparam.Foobar2kLib.Messages;
 
 namespace Sharparam.Foobar2kLib.Networking
 {
     public class MessageManager
     {
+        private static readonly Regex MessageRegex = new Regex(@"(\d+)\|(.+)\|");
         private static readonly string[] Separators = new[] { "\r\n", "\n\r", "\r", "\n" };
-
+        private readonly SongParser _parser;
+        private readonly Settings _settings;
         private readonly Stream _stream;
-
         private byte[] _readBuffer;
 
         private string _sendMessage;
 
-        internal MessageManager(Stream stream)
+        internal MessageManager(Stream stream, SongParser parser, Settings settings)
         {
             _stream = stream;
+            _parser = parser;
+            _settings = settings;
         }
 
-        public event EventHandler<StringEventArgs> MessageReceived;
+        public event EventHandler<MessageEventArgs> MessageReceived;
 
         public event EventHandler<StringEventArgs> MessageSent;
+
+        public event EventHandler<StringEventArgs> RawMessageReceived;
 
         public void WriteMessage(string message)
         {
@@ -63,16 +70,23 @@ namespace Sharparam.Foobar2kLib.Networking
             _stream.BeginRead(_readBuffer, 0, _readBuffer.Length, OnStreamRead, _stream);
         }
 
-        private void OnMessageReceived(string message)
+        private void OnMessageReceived(Message message)
         {
             var fun = MessageReceived;
             if (fun != null)
-                fun(this, new StringEventArgs(message));
+                fun(this, new MessageEventArgs(message));
         }
 
         private void OnMessageSent(string message)
         {
             var fun = MessageSent;
+            if (fun != null)
+                fun(this, new StringEventArgs(message));
+        }
+
+        private void OnRawMessageReceived(string message)
+        {
+            var fun = RawMessageReceived;
             if (fun != null)
                 fun(this, new StringEventArgs(message));
         }
@@ -86,7 +100,75 @@ namespace Sharparam.Foobar2kLib.Networking
             var messages = data.Split(Separators, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var message in messages)
-                OnMessageReceived(message);
+            {
+                OnRawMessageReceived(message);
+
+                // Parse message
+                var match = MessageRegex.Match(message);
+                var messageId = int.Parse(match.Groups[1].Value);
+                var messageContent = match.Groups[2].Value;
+
+                var messageType = (MessageType)messageId;
+
+                Message messageObject;
+
+                switch (messageType)
+                {
+                    case MessageType.Playing:
+                        messageObject = new PlayingMessage(messageContent, _settings.Separator, _parser);
+                        break;
+
+                    case MessageType.Stopped:
+                        messageObject = new StoppedMessage(messageContent, _settings.Separator, _parser);
+                        break;
+
+                    case MessageType.Paused:
+                        messageObject = new PausedMessage(messageContent, _settings.Separator, _parser);
+                        break;
+
+                    case MessageType.Volume:
+                        messageObject = new VolumeMessage(messageContent);
+                        break;
+
+                    case MessageType.Order:
+                        messageObject = new OrderMessage(messageContent);
+                        break;
+
+                    case MessageType.PlaylistInfo:
+                        messageObject = new PlaylistInfoMessage(messageContent, _settings.Separator);
+                        break;
+
+                    case MessageType.PlaylistCount:
+                        messageObject = new PlaylistCountMessage(messageContent, _settings.Separator);
+                        break;
+
+                    case MessageType.PlaylistEntry:
+                        messageObject = new PlaylistEntryMessage(messageContent, _settings.Separator, _parser);
+                        break;
+
+                    case MessageType.PlaylistEntryPlaying:
+                        messageObject = new PlaylistEntryPlayingMessage(messageContent, _settings.Separator, _parser);
+                        break;
+
+                    case MessageType.QueueCount:
+                        messageObject = new QueueCountMessage(messageContent);
+                        break;
+
+                    case MessageType.QueueEntry:
+                        messageObject = new QueueEntryMessage(messageContent, _settings.Separator, _parser);
+                        break;
+
+                    case MessageType.Info:
+                        messageObject = new InfoMessage(messageContent);
+                        break;
+
+                    default:
+                        messageObject = new Message(messageType, messageContent);
+                        break;
+                }
+
+                OnMessageReceived(messageObject);
+            }
 
             StartRead();
         }

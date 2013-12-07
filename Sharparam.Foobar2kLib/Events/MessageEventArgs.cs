@@ -1,4 +1,4 @@
-﻿// <copyright file="StringEventArgs.cs" company="Adam Hellberg">
+﻿// <copyright file="MessageEventArgs.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,16 +20,17 @@
 // </copyright>
 
 using System;
+using Sharparam.Foobar2kLib.Messages;
 
 namespace Sharparam.Foobar2kLib.Events
 {
-    public class StringEventArgs : EventArgs
+    public class MessageEventArgs : EventArgs
     {
-        public readonly string Data;
+        public readonly Message Message;
 
-        internal StringEventArgs(string data)
+        internal MessageEventArgs(Message message)
         {
-            Data = data;
+            Message = message;
         }
     }
 }

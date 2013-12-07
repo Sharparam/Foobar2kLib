@@ -1,4 +1,4 @@
-﻿// <copyright file="StringEventArgs.cs" company="Adam Hellberg">
+﻿// <copyright file="MessageType.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -19,17 +19,21 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-using System;
-
-namespace Sharparam.Foobar2kLib.Events
+namespace Sharparam.Foobar2kLib
 {
-    public class StringEventArgs : EventArgs
+    public enum MessageType
     {
-        public readonly string Data;
-
-        internal StringEventArgs(string data)
-        {
-            Data = data;
-        }
+        Playing = 111,
+        Stopped = 112,
+        Paused = 113,
+        Volume = 222,
+        Order = 333,
+        PlaylistInfo = 402,
+        PlaylistCount = 600,
+        PlaylistEntry = 601,
+        PlaylistEntryPlaying = 602,
+        QueueCount = 800,
+        QueueEntry = 801,
+        Info = 999
     }
 }
