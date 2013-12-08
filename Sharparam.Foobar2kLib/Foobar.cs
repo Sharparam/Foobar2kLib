@@ -74,6 +74,7 @@ namespace Sharparam.Foobar2kLib
             {
                 return _playlistIndex;
             }
+
             private set
             {
                 bool changed = value == _playlistIndex;
@@ -101,6 +102,7 @@ namespace Sharparam.Foobar2kLib
             {
                 return _trackIndex;
             }
+
             private set
             {
                 var changed = value == _trackIndex;
@@ -131,6 +133,7 @@ namespace Sharparam.Foobar2kLib
             {
                 return _state;
             }
+
             set
             {
                 switch (value)
@@ -337,20 +340,20 @@ namespace Sharparam.Foobar2kLib
         {
             UpdatePlaylist(args.Message.PlaylistIndex, args.Message.PlaylistName);
             CurrentPlaylistIndex = args.Message.PlaylistIndex;
-            //RequestPlaylistEntries(args.Message.PlaylistIndex);
+            ////RequestPlaylistEntries(args.Message.PlaylistIndex);
         }
 
         private void MessageManagerOnPlaylistInfoMessageReceived(object sender, PlaylistInfoMessageEventArgs args)
         {
             UpdatePlaylist(args.Message.PlaylistIndex, args.Message.PlaylistName);
-            //RequestPlaylistEntries(args.Message.PlaylistIndex);
+            ////RequestPlaylistEntries(args.Message.PlaylistIndex);
         }
 
         private void MessageManagerOnPlaylistInfoSpecificMessageReceived(
             object sender, PlaylistInfoSpecificMessageEventArgs args)
         {
             UpdatePlaylist(args.Message.PlaylistIndex, args.Message.PlaylistName);
-            //RequestPlaylistEntries(args.Message.PlaylistIndex);
+            ////RequestPlaylistEntries(args.Message.PlaylistIndex);
         }
 
         private void MessageManagerOnPlaylistSongMessageReceived(object sender, PlaylistSongMessageEventArgs args)
