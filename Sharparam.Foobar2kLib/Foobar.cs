@@ -103,7 +103,7 @@ namespace Sharparam.Foobar2kLib
             }
             private set
             {
-                bool changed = value == _trackIndex;
+                var changed = value == _trackIndex;
                 _trackIndex = value;
                 if (changed)
                 {
@@ -307,13 +307,6 @@ namespace Sharparam.Foobar2kLib
             MessageManager.WriteMessage("seek delta {0}", seconds);
         }
 
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            var fun = PropertyChanged;
-            if (fun != null)
-                fun(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         private void MessageManagerOnOrderMessageReceived(object sender, OrderMessageEventArgs args)
         {
             _order = args.Message.Order;
@@ -339,7 +332,8 @@ namespace Sharparam.Foobar2kLib
             OnPropertyChanged("Time");
         }
 
-        private void MessageManagerOnPlaylistInfoCurrentMessageReceived(object sender, PlaylistInfoCurrentMessageEventArgs args)
+        private void MessageManagerOnPlaylistInfoCurrentMessageReceived(
+            object sender, PlaylistInfoCurrentMessageEventArgs args)
         {
             UpdatePlaylist(args.Message.PlaylistIndex, args.Message.PlaylistName);
             CurrentPlaylistIndex = args.Message.PlaylistIndex;
@@ -352,7 +346,8 @@ namespace Sharparam.Foobar2kLib
             //RequestPlaylistEntries(args.Message.PlaylistIndex);
         }
 
-        private void MessageManagerOnPlaylistInfoSpecificMessageReceived(object sender, PlaylistInfoSpecificMessageEventArgs args)
+        private void MessageManagerOnPlaylistInfoSpecificMessageReceived(
+            object sender, PlaylistInfoSpecificMessageEventArgs args)
         {
             UpdatePlaylist(args.Message.PlaylistIndex, args.Message.PlaylistName);
             //RequestPlaylistEntries(args.Message.PlaylistIndex);
@@ -363,7 +358,8 @@ namespace Sharparam.Foobar2kLib
             UpdatePlaylistSong(args.Message.PlaylistIndex, args.Message.SongIndex, args.Message.Song);
         }
 
-        private void MessageManagerOnPlaylistSongPausedMessageReceived(object sender, PlaylistSongPausedMessageEventArgs args)
+        private void MessageManagerOnPlaylistSongPausedMessageReceived(
+            object sender, PlaylistSongPausedMessageEventArgs args)
         {
             UpdatePlaylistSong(args.Message.PlaylistIndex, args.Message.SongIndex, args.Message.Song);
             CurrentPlaylistIndex = args.Message.PlaylistIndex;
@@ -372,7 +368,8 @@ namespace Sharparam.Foobar2kLib
             RequestTrackinfo();
         }
 
-        private void MessageManagerOnPlaylistSongPlayingMessageReceived(object sender, PlaylistSongPlayingMessageEventArgs args)
+        private void MessageManagerOnPlaylistSongPlayingMessageReceived(
+            object sender, PlaylistSongPlayingMessageEventArgs args)
         {
             UpdatePlaylistSong(args.Message.PlaylistIndex, args.Message.SongIndex, args.Message.Song);
             CurrentPlaylistIndex = args.Message.PlaylistIndex;
@@ -437,6 +434,13 @@ namespace Sharparam.Foobar2kLib
             RequestAllPlaylistInfo();
         }
 
+        private void OnPropertyChanged(string propertyName)
+        {
+            var fun = PropertyChanged;
+            if (fun != null)
+                fun(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         private void Stop()
         {
             MessageManager.WriteMessage("stop");
@@ -470,7 +474,7 @@ namespace Sharparam.Foobar2kLib
 
         private void UpdateState(PlayState newState)
         {
-            bool changed = newState == _state;
+            var changed = newState == _state;
             _state = newState;
             if (changed)
                 OnPropertyChanged("State");

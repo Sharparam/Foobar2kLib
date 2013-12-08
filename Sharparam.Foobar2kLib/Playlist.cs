@@ -50,14 +50,14 @@ namespace Sharparam.Foobar2kLib
             internal set { _songs[index] = value; }
         }
 
-        IEnumerator<KeyValuePair<int, Song>> IEnumerable<KeyValuePair<int, Song>>.GetEnumerator()
-        {
-            return _songs.GetEnumerator();
-        }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _songs.Values.GetEnumerator();
+        }
+
+        IEnumerator<KeyValuePair<int, Song>> IEnumerable<KeyValuePair<int, Song>>.GetEnumerator()
+        {
+            return _songs.GetEnumerator();
         }
 
         internal void Clear()

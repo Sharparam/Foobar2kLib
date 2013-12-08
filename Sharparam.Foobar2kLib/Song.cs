@@ -170,7 +170,7 @@ namespace Sharparam.Foobar2kLib
 
             PathSort = data.ContainsKey("path_sort") ? data["path_sort"] : null;
             Length = data.ContainsKey("length") ? data["length"] : null;
-            
+
             if (data.ContainsKey("length_seconds"))
             {
                 if (!int.TryParse(data["length_seconds"], out LengthSeconds))
@@ -178,7 +178,7 @@ namespace Sharparam.Foobar2kLib
             }
             else
                 LengthSeconds = -1;
-            
+
             if (data.ContainsKey("bitrate"))
             {
                 if (!int.TryParse(data["bitrate"], out Bitrate))
