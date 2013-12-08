@@ -19,6 +19,7 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
+using System.Globalization;
 using Sharparam.Foobar2kLib.Networking;
 
 namespace Sharparam.Foobar2kLib.Messages
@@ -30,7 +31,7 @@ namespace Sharparam.Foobar2kLib.Messages
         internal VolumeMessage(string content)
             : base(MessageType.Volume, content)
         {
-            Value = float.Parse(content);
+            Value = float.Parse(content, CultureInfo.InvariantCulture);
         }
     }
 }
