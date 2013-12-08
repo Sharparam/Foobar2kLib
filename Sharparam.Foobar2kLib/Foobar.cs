@@ -449,7 +449,10 @@ namespace Sharparam.Foobar2kLib
             if (playlist == null)
                 Playlists[index] = new Playlist(index, name);
             else
+            {
                 playlist.Name = name;
+                RequestPlaylistInfo(index);
+            }
         }
 
         private void UpdatePlaylistSong(int playlistIndex, int songIndex, Song song)
