@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace Sharparam.Foobar2kLib
 {
-    public class Playlists : IEnumerable<Playlist>, IEnumerable<KeyValuePair<int, Playlist>>
+    public class Playlists : IEnumerable<KeyValuePair<int, Playlist>>
     {
         private readonly Dictionary<int, Playlist> _playlists;
 
@@ -52,11 +52,6 @@ namespace Sharparam.Foobar2kLib
         IEnumerator<KeyValuePair<int, Playlist>> IEnumerable<KeyValuePair<int, Playlist>>.GetEnumerator()
         {
             return _playlists.GetEnumerator();
-        }
-
-        IEnumerator<Playlist> IEnumerable<Playlist>.GetEnumerator()
-        {
-            return _playlists.Values.GetEnumerator();
         }
 
         internal void Clear()

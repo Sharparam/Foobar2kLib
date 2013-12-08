@@ -20,13 +20,14 @@
 // </copyright>
 
 using System;
+using System.ComponentModel;
 using System.Net.Sockets;
 using Sharparam.Foobar2kLib.Events;
 using Sharparam.Foobar2kLib.Networking;
 
 namespace Sharparam.Foobar2kLib
 {
-    public class Foobar
+    public class Foobar : INotifyPropertyChanged
     {
         public readonly Playlists Playlists;
 
@@ -38,8 +39,10 @@ namespace Sharparam.Foobar2kLib
 
         private string _order;
         private int _playlistIndex;
+        private PlayState _state;
+        private float _time;
         private int _trackIndex;
-        private int _volume;
+        private float _volume;
 
         public Foobar(string host, ushort port, string format, string separator)
         {
@@ -52,14 +55,63 @@ namespace Sharparam.Foobar2kLib
 
             Playlists = new Playlists();
 
-            _playlistIndex = 0;
-            _trackIndex = 0;
-
             _controlserverClient = new TcpClient();
             _controlserverClient.BeginConnect(Host, Port, OnControlServerConnected, _controlserverClient);
         }
 
         public event EventHandler Connected;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Playlist CurrentPlaylist
+        {
+            get { return Playlists[_playlistIndex]; }
+        }
+
+        public int CurrentPlaylistIndex
+        {
+            get
+            {
+                return _playlistIndex;
+            }
+            private set
+            {
+                bool changed = value == _playlistIndex;
+                _playlistIndex = value;
+                if (changed)
+                {
+                    OnPropertyChanged("CurrentPlaylistIndex");
+                    OnPropertyChanged("CurrentPlaylist");
+                }
+            }
+        }
+
+        public Song CurrentSong
+        {
+            get
+            {
+                var list = Playlists[_playlistIndex];
+                return list == null ? null : list[_trackIndex];
+            }
+        }
+
+        public int CurrentTrackIndex
+        {
+            get
+            {
+                return _trackIndex;
+            }
+            private set
+            {
+                bool changed = value == _trackIndex;
+                _trackIndex = value;
+                if (changed)
+                {
+                    OnPropertyChanged("CurrentTrackIndex");
+                    OnPropertyChanged("CurrentSong");
+                }
+            }
+        }
 
         public string Host { get; private set; }
 
@@ -72,6 +124,41 @@ namespace Sharparam.Foobar2kLib
         }
 
         public ushort Port { get; private set; }
+
+        public PlayState State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case PlayState.Playing:
+                        if (_state == PlayState.Paused)
+                            Resume();
+                        else
+                            Play();
+                        break;
+
+                    case PlayState.Paused:
+                        if (_state != PlayState.Paused)
+                            Pause();
+                        break;
+
+                    case PlayState.Stopped:
+                        Stop();
+                        break;
+                }
+            }
+        }
+
+        public float Time
+        {
+            get { return _time; }
+            set { Seek((int)Math.Floor(value + 0.5)); }
+        }
 
         public float Volume
         {
@@ -149,6 +236,11 @@ namespace Sharparam.Foobar2kLib
             MessageManager.WriteMessage("listinfo all");
         }
 
+        public void RequestOrder()
+        {
+            MessageManager.WriteMessage("order");
+        }
+
         public void RequestPlaylistEntries()
         {
             RequestPlaylistEntries(_playlistIndex);
@@ -215,9 +307,94 @@ namespace Sharparam.Foobar2kLib
             MessageManager.WriteMessage("seek delta {0}", seconds);
         }
 
-        private void MessageManagerOnMessageReceived(object sender, MessageEventArgs args)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            // TODO: Raise relevant events here
+            var fun = PropertyChanged;
+            if (fun != null)
+                fun(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void MessageManagerOnOrderMessageReceived(object sender, OrderMessageEventArgs args)
+        {
+            _order = args.Message.Order;
+        }
+
+        private void MessageManagerOnPausedMessageReceived(object sender, PausedMessageEventArgs args)
+        {
+            UpdatePlaylistSong(args.Message.PlaylistIndex, args.Message.SongIndex, args.Message.Song);
+            CurrentPlaylistIndex = args.Message.PlaylistIndex;
+            CurrentTrackIndex = args.Message.SongIndex;
+            UpdateState(PlayState.Paused);
+            _time = args.Message.Time;
+            OnPropertyChanged("Time");
+        }
+
+        private void MessageManagerOnPlayingMessageReceived(object sender, PlayingMessageEventArgs args)
+        {
+            UpdatePlaylistSong(args.Message.PlaylistIndex, args.Message.SongIndex, args.Message.Song);
+            CurrentPlaylistIndex = args.Message.PlaylistIndex;
+            CurrentTrackIndex = args.Message.SongIndex;
+            UpdateState(PlayState.Playing);
+            _time = args.Message.Time;
+            OnPropertyChanged("Time");
+        }
+
+        private void MessageManagerOnPlaylistInfoCurrentMessageReceived(object sender, PlaylistInfoCurrentMessageEventArgs args)
+        {
+            UpdatePlaylist(args.Message.PlaylistIndex, args.Message.PlaylistName);
+            CurrentPlaylistIndex = args.Message.PlaylistIndex;
+            //RequestPlaylistEntries(args.Message.PlaylistIndex);
+        }
+
+        private void MessageManagerOnPlaylistInfoMessageReceived(object sender, PlaylistInfoMessageEventArgs args)
+        {
+            UpdatePlaylist(args.Message.PlaylistIndex, args.Message.PlaylistName);
+            //RequestPlaylistEntries(args.Message.PlaylistIndex);
+        }
+
+        private void MessageManagerOnPlaylistInfoSpecificMessageReceived(object sender, PlaylistInfoSpecificMessageEventArgs args)
+        {
+            UpdatePlaylist(args.Message.PlaylistIndex, args.Message.PlaylistName);
+            //RequestPlaylistEntries(args.Message.PlaylistIndex);
+        }
+
+        private void MessageManagerOnPlaylistSongMessageReceived(object sender, PlaylistSongMessageEventArgs args)
+        {
+            UpdatePlaylistSong(args.Message.PlaylistIndex, args.Message.SongIndex, args.Message.Song);
+        }
+
+        private void MessageManagerOnPlaylistSongPausedMessageReceived(object sender, PlaylistSongPausedMessageEventArgs args)
+        {
+            UpdatePlaylistSong(args.Message.PlaylistIndex, args.Message.SongIndex, args.Message.Song);
+            CurrentPlaylistIndex = args.Message.PlaylistIndex;
+            CurrentTrackIndex = args.Message.SongIndex;
+            UpdateState(PlayState.Paused);
+            RequestTrackinfo();
+        }
+
+        private void MessageManagerOnPlaylistSongPlayingMessageReceived(object sender, PlaylistSongPlayingMessageEventArgs args)
+        {
+            UpdatePlaylistSong(args.Message.PlaylistIndex, args.Message.SongIndex, args.Message.Song);
+            CurrentPlaylistIndex = args.Message.PlaylistIndex;
+            CurrentTrackIndex = args.Message.SongIndex;
+            UpdateState(PlayState.Playing);
+            RequestTrackinfo();
+        }
+
+        private void MessageManagerOnStoppedMessageReceived(object sender, StoppedMessageEventArgs args)
+        {
+            UpdatePlaylistSong(args.Message.PlaylistIndex, args.Message.SongIndex, args.Message.Song);
+            CurrentPlaylistIndex = args.Message.PlaylistIndex;
+            CurrentTrackIndex = args.Message.SongIndex;
+            UpdateState(PlayState.Stopped);
+            _time = args.Message.Time;
+            OnPropertyChanged("Time");
+        }
+
+        private void MessageManagerOnVolumeMessageReceived(object sender, VolumeMessageEventArgs args)
+        {
+            _volume = args.Message.Value;
+            OnPropertyChanged("Volume");
         }
 
         private void OnConnected()
@@ -235,10 +412,65 @@ namespace Sharparam.Foobar2kLib
             _controlserverStream = _controlserverClient.GetStream();
 
             MessageManager = new MessageManager(_controlserverStream, _songParser, _settings);
-            MessageManager.MessageReceived += MessageManagerOnMessageReceived;
+
+            MessageManager.PlayingMessageReceived += MessageManagerOnPlayingMessageReceived;
+            MessageManager.PausedMessageReceived += MessageManagerOnPausedMessageReceived;
+            MessageManager.StoppedMessageReceived += MessageManagerOnStoppedMessageReceived;
+            MessageManager.VolumeMessageReceived += MessageManagerOnVolumeMessageReceived;
+            MessageManager.OrderMessageReceived += MessageManagerOnOrderMessageReceived;
+            MessageManager.PlaylistInfoMessageReceived += MessageManagerOnPlaylistInfoMessageReceived;
+            MessageManager.PlaylistInfoCurrentMessageReceived += MessageManagerOnPlaylistInfoCurrentMessageReceived;
+            MessageManager.PlaylistInfoSpecificMessageReceived += MessageManagerOnPlaylistInfoSpecificMessageReceived;
+            MessageManager.PlaylistSongMessageReceived += MessageManagerOnPlaylistSongMessageReceived;
+            MessageManager.PlaylistSongPlayingMessageReceived += MessageManagerOnPlaylistSongPlayingMessageReceived;
+            MessageManager.PlaylistSongPausedMessageReceived += MessageManagerOnPlaylistSongPausedMessageReceived;
+
+            MessageManager.MessageSent += (sender, args) => Console.WriteLine(">>> {0}", args.Data);
+
             MessageManager.StartRead();
 
             OnConnected();
+
+            RequestVolume();
+            RequestTrackinfo();
+            RequestOrder();
+            RequestAllPlaylistInfo();
+        }
+
+        private void Stop()
+        {
+            MessageManager.WriteMessage("stop");
+        }
+
+        private void UpdatePlaylist(int index, string name = "<Unknown>")
+        {
+            var playlist = Playlists[index];
+
+            if (playlist == null)
+                Playlists[index] = new Playlist(index, name);
+            else
+                playlist.Name = name;
+        }
+
+        private void UpdatePlaylistSong(int playlistIndex, int songIndex, Song song)
+        {
+            var playlist = Playlists[playlistIndex];
+
+            if (playlist == null)
+            {
+                playlist = new Playlist(playlistIndex);
+                Playlists[playlistIndex] = playlist;
+            }
+
+            playlist[songIndex] = song;
+        }
+
+        private void UpdateState(PlayState newState)
+        {
+            bool changed = newState == _state;
+            _state = newState;
+            if (changed)
+                OnPropertyChanged("State");
         }
     }
 }

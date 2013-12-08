@@ -1,4 +1,4 @@
-﻿// <copyright file="MessageType.cs" company="Adam Hellberg">
+﻿// <copyright file="PlaylistInfoSpecificMessageEventArgs.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -19,29 +19,18 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace Sharparam.Foobar2kLib.Networking
+using System;
+using Sharparam.Foobar2kLib.Messages;
+
+namespace Sharparam.Foobar2kLib.Events
 {
-    public enum MessageType
+    public class PlaylistInfoSpecificMessageEventArgs : EventArgs
     {
-        Playing = 111,
-        Stopped = 112,
-        Paused = 113,
-        Volume = 222,
-        Order = 333,
-        PlaylistCount = 400,
-        PlaylistInfo = 401,
-        PlaylistInfoCurrent = 402,
-        PlaylistInfoSpecific = 404,
-        SearchResultCount = 500,
-        SearchResultEntry = 501,
-        SearchResultEntryPlaying = 502,
-        SearchResultEntryPaused = 503,
-        PlaylistSongCount = 600,
-        PlaylistSong = 601,
-        PlaylistSongPlaying = 602,
-        PlaylistSongPaused = 603,
-        QueueCount = 800,
-        QueueEntry = 801,
-        Info = 999
+        public readonly PlaylistInfoSpecificMessage Message;
+
+        internal PlaylistInfoSpecificMessageEventArgs(PlaylistInfoSpecificMessage message)
+        {
+            Message = message;
+        }
     }
 }

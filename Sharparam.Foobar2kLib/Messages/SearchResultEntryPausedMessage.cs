@@ -1,4 +1,4 @@
-﻿// <copyright file="MessageType.cs" company="Adam Hellberg">
+﻿// <copyright file="SearchResultEntryPausedMessage.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -19,29 +19,35 @@
 //     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-namespace Sharparam.Foobar2kLib.Networking
+using System.Text.RegularExpressions;
+using Sharparam.Foobar2kLib.Networking;
+
+namespace Sharparam.Foobar2kLib.Messages
 {
-    public enum MessageType
+    public class SearchResultEntryPausedMessage : SongMessage
     {
-        Playing = 111,
-        Stopped = 112,
-        Paused = 113,
-        Volume = 222,
-        Order = 333,
-        PlaylistCount = 400,
-        PlaylistInfo = 401,
-        PlaylistInfoCurrent = 402,
-        PlaylistInfoSpecific = 404,
-        SearchResultCount = 500,
-        SearchResultEntry = 501,
-        SearchResultEntryPlaying = 502,
-        SearchResultEntryPaused = 503,
-        PlaylistSongCount = 600,
-        PlaylistSong = 601,
-        PlaylistSongPlaying = 602,
-        PlaylistSongPaused = 603,
-        QueueCount = 800,
-        QueueEntry = 801,
-        Info = 999
+        public readonly int PlaylistIndex;
+        public readonly int SongIndex;
+
+        private const string MessageRegexFormat = @"(\d+)\{0}(\d+)\{0}(.+)";
+
+        private readonly Song _song;
+
+        internal SearchResultEntryPausedMessage(string content, string separator, SongParser parser)
+            : base(MessageType.SearchResultEntryPaused, content)
+        {
+            var messageRegex = new Regex(string.Format(MessageRegexFormat, separator), RegexOptions.IgnoreCase);
+
+            var match = messageRegex.Match(content);
+
+            PlaylistIndex = int.Parse(match.Groups[1].Value);
+            SongIndex = int.Parse(match.Groups[2].Value);
+            _song = parser.ParseSong(match.Groups[3].Value);
+        }
+
+        public override Song Song
+        {
+            get { return _song; }
+        }
     }
 }

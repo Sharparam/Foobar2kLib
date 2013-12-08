@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace Sharparam.Foobar2kLib
 {
-    public class Playlist : IEnumerable<Song>, IEnumerable<KeyValuePair<int, Song>>
+    public class Playlist : IEnumerable<KeyValuePair<int, Song>>
     {
         public readonly int Index;
 
@@ -53,11 +53,6 @@ namespace Sharparam.Foobar2kLib
         IEnumerator<KeyValuePair<int, Song>> IEnumerable<KeyValuePair<int, Song>>.GetEnumerator()
         {
             return _songs.GetEnumerator();
-        }
-
-        public IEnumerator<Song> GetEnumerator()
-        {
-            return _songs.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

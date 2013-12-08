@@ -1,4 +1,4 @@
-﻿// <copyright file="PlaylistInfoPlayingMessageEventArgs.cs" company="Adam Hellberg">
+﻿// <copyright file="SearchResultEntryPausedMessageEventArgs.cs" company="Adam Hellberg">
 //     Copyright © 2013 by Adam Hellberg.
 //
 //     Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -24,11 +24,11 @@ using Sharparam.Foobar2kLib.Messages;
 
 namespace Sharparam.Foobar2kLib.Events
 {
-    public class PlaylistInfoPlayingMessageEventArgs : EventArgs
+    public class SearchResultEntryPausedMessageEventArgs : EventArgs
     {
-        public readonly PlaylistInfoPlayingMessage Message;
+        public readonly SearchResultEntryPausedMessage Message;
 
-        internal PlaylistInfoPlayingMessageEventArgs(PlaylistInfoPlayingMessage message)
+        internal SearchResultEntryPausedMessageEventArgs(SearchResultEntryPausedMessage message)
         {
             Message = message;
         }

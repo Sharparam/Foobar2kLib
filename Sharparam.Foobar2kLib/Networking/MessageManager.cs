@@ -35,6 +35,7 @@ namespace Sharparam.Foobar2kLib.Networking
         private readonly SongParser _parser;
         private readonly Settings _settings;
         private readonly Stream _stream;
+        private StringBuilder _backlog;
         private byte[] _readBuffer;
 
         private string _sendMessage;
@@ -44,6 +45,7 @@ namespace Sharparam.Foobar2kLib.Networking
             _stream = stream;
             _parser = parser;
             _settings = settings;
+            _backlog = new StringBuilder();
         }
 
         public event EventHandler<InfoMessageEventArgs> InfoMessageReceived;
@@ -60,13 +62,17 @@ namespace Sharparam.Foobar2kLib.Networking
 
         public event EventHandler<PlaylistCountMessageEventArgs> PlaylistCountMessageReceived;
 
+        public event EventHandler<PlaylistInfoCurrentMessageEventArgs> PlaylistInfoCurrentMessageReceived;
+
         public event EventHandler<PlaylistInfoMessageEventArgs> PlaylistInfoMessageReceived;
 
-        public event EventHandler<PlaylistInfoPlayingMessageEventArgs> PlaylistInfoPlayingMessageReceived;
+        public event EventHandler<PlaylistInfoSpecificMessageEventArgs> PlaylistInfoSpecificMessageReceived;
 
         public event EventHandler<PlaylistSongCountMessageEventArgs> PlaylistSongCountMessageReceived;
 
         public event EventHandler<PlaylistSongMessageEventArgs> PlaylistSongMessageReceived;
+
+        public event EventHandler<PlaylistSongPausedMessageEventArgs> PlaylistSongPausedMessageReceived;
 
         public event EventHandler<PlaylistSongPlayingMessageEventArgs> PlaylistSongPlayingMessageReceived;
 
@@ -79,6 +85,8 @@ namespace Sharparam.Foobar2kLib.Networking
         public event EventHandler<SearchResultCountMessageEventArgs> SearchResultCountMessageReceived;
 
         public event EventHandler<SearchResultEntryMessageEventArgs> SearchResultEntryMessageReceived;
+
+        public event EventHandler<SearchResultEntryPausedMessageEventArgs> SearchResultEntryPausedMessageReceived;
 
         public event EventHandler<SearchResultEntryPlayingMessageEventArgs> SearchResultEntryPlayingMessageReceived;
 
@@ -152,6 +160,13 @@ namespace Sharparam.Foobar2kLib.Networking
                 fun(this, new PlaylistCountMessageEventArgs(message));
         }
 
+        private void OnPlaylistInfoCurrentMessageReceived(PlaylistInfoCurrentMessage message)
+        {
+            var fun = PlaylistInfoCurrentMessageReceived;
+            if (fun != null)
+                fun(this, new PlaylistInfoCurrentMessageEventArgs(message));
+        }
+
         private void OnPlaylistInfoMessageReceived(PlaylistInfoMessage message)
         {
             var fun = PlaylistInfoMessageReceived;
@@ -159,11 +174,11 @@ namespace Sharparam.Foobar2kLib.Networking
                 fun(this, new PlaylistInfoMessageEventArgs(message));
         }
 
-        private void OnPlaylistInfoPlayingMessageReceived(PlaylistInfoPlayingMessage message)
+        private void OnPlaylistInfoSpecificMessageReceived(PlaylistInfoSpecificMessage message)
         {
-            var fun = PlaylistInfoPlayingMessageReceived;
+            var fun = PlaylistInfoSpecificMessageReceived;
             if (fun != null)
-                fun(this, new PlaylistInfoPlayingMessageEventArgs(message));
+                fun(this, new PlaylistInfoSpecificMessageEventArgs(message));
         }
 
         private void OnPlaylistSongCountMessageReceived(PlaylistSongCountMessage message)
@@ -178,6 +193,13 @@ namespace Sharparam.Foobar2kLib.Networking
             var fun = PlaylistSongMessageReceived;
             if (fun != null)
                 fun(this, new PlaylistSongMessageEventArgs(message));
+        }
+
+        private void OnPlaylistSongPausedMessageReceived(PlaylistSongPausedMessage message)
+        {
+            var fun = PlaylistSongPausedMessageReceived;
+            if (fun != null)
+                fun(this, new PlaylistSongPausedMessageEventArgs(message));
         }
 
         private void OnPlaylistSongPlayingMessageReceived(PlaylistSongPlayingMessage message)
@@ -222,6 +244,13 @@ namespace Sharparam.Foobar2kLib.Networking
                 fun(this, new SearchResultEntryMessageEventArgs(message));
         }
 
+        private void OnSearchResultEntryPausedMessageReceived(SearchResultEntryPausedMessage message)
+        {
+            var fun = SearchResultEntryPausedMessageReceived;
+            if (fun != null)
+                fun(this, new SearchResultEntryPausedMessageEventArgs(message));
+        }
+
         private void OnSearchResultEntryPlayingMessageReceived(SearchResultEntryPlayingMessage message)
         {
             var fun = SearchResultEntryPlayingMessageReceived;
@@ -241,6 +270,16 @@ namespace Sharparam.Foobar2kLib.Networking
             var numRead = ((Stream)result.AsyncState).EndRead(result);
 
             var data = Encoding.UTF8.GetString(_readBuffer, 0, numRead);
+
+            if (!data.EndsWith("\r\n"))
+            {
+                _backlog.Append(data);
+                StartRead();
+                return;
+            }
+
+            if (_backlog.Length > 0)
+                data = _backlog + data;
 
             var messages = data.Split(Separators, StringSplitOptions.RemoveEmptyEntries);
 
@@ -289,9 +328,14 @@ namespace Sharparam.Foobar2kLib.Networking
                         OnPlaylistInfoMessageReceived(new PlaylistInfoMessage(messageContent, _settings.Separator));
                         break;
 
-                    case MessageType.PlaylistInfoPlaying:
-                        OnPlaylistInfoPlayingMessageReceived(
-                            new PlaylistInfoPlayingMessage(messageContent, _settings.Separator));
+                    case MessageType.PlaylistInfoCurrent:
+                        OnPlaylistInfoCurrentMessageReceived(
+                            new PlaylistInfoCurrentMessage(messageContent, _settings.Separator));
+                        break;
+
+                    case MessageType.PlaylistInfoSpecific:
+                        OnPlaylistInfoSpecificMessageReceived(
+                            new PlaylistInfoSpecificMessage(messageContent, _settings.Separator));
                         break;
 
                     case MessageType.SearchResultCount:
@@ -309,6 +353,11 @@ namespace Sharparam.Foobar2kLib.Networking
                             new SearchResultEntryPlayingMessage(messageContent, _settings.Separator, _parser));
                         break;
 
+                    case MessageType.SearchResultEntryPaused:
+                        OnSearchResultEntryPausedMessageReceived(
+                            new SearchResultEntryPausedMessage(messageContent, _settings.Separator, _parser));
+                        break;
+
                     case MessageType.PlaylistSongCount:
                         OnPlaylistSongCountMessageReceived(
                             new PlaylistSongCountMessage(messageContent, _settings.Separator));
@@ -324,6 +373,11 @@ namespace Sharparam.Foobar2kLib.Networking
                             new PlaylistSongPlayingMessage(messageContent, _settings.Separator, _parser));
                         break;
 
+                    case MessageType.PlaylistSongPaused:
+                        OnPlaylistSongPausedMessageReceived(
+                            new PlaylistSongPausedMessage(messageContent, _settings.Separator, _parser));
+                        break;
+
                     case MessageType.QueueCount:
                         OnQueueCountMessageReceived(new QueueCountMessage(messageContent));
                         break;
@@ -337,6 +391,8 @@ namespace Sharparam.Foobar2kLib.Networking
                         break;
                 }
             }
+
+            _backlog = new StringBuilder();
 
             StartRead();
         }

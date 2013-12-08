@@ -106,33 +106,113 @@ namespace Sharparam.Foobar2kLib
         }
 
         internal Song(IDictionary<string, string> data)
-            : this(
-                data.ContainsKey("title") ? data["title"] : null,
-                data.ContainsKey("artist") ? data["artist"] : null,
-                data.ContainsKey("album") ? data["album"] : null,
-                data.ContainsKey("date") ? data["date"] : null,
-                data.ContainsKey("genre") ? data["genre"] : null,
-                data.ContainsKey("tracknumber") ? int.Parse(data["tracknumber"]) : -1,
-                data.ContainsKey("totaltracks") ? int.Parse(data["totaltracks"]) : -1,
-                data.ContainsKey("discnumber") ? int.Parse(data["discnumber"]) : -1,
-                data.ContainsKey("totaldiscs") ? int.Parse(data["totaldiscs"]) : -1,
-                data.ContainsKey("codec") ? data["codec"] : null,
-                data.ContainsKey("codec_profile") ? data["codec_profile"] : null,
-                data.ContainsKey("filename") ? data["filename"] : null,
-                data.ContainsKey("filename_ext") ? data["filename_ext"] : null,
-                data.ContainsKey("directoryname") ? data["directoryname"] : null,
-                data.ContainsKey("path") ? data["path"] : null,
-                data.ContainsKey("subsong") ? int.Parse(data["subsong"]) : -1,
-                data.ContainsKey("path_sort") ? data["path_sort"] : null,
-                data.ContainsKey("length") ? data["length"] : null,
-                data.ContainsKey("length_seconds") ? int.Parse(data["length_seconds"]) : -1,
-                data.ContainsKey("bitrate") ? int.Parse(data["bitrate"]) : -1,
-                data.ContainsKey("channels") ? int.Parse(data["channels"]) : -1,
-                data.ContainsKey("samplerate") ? int.Parse(data["samplerate"]) : -1,
-                data.ContainsKey("filesize") ? int.Parse(data["filesize"]) : -1,
-                data.ContainsKey("filesize_natural") ? data["filesize_natural"] : null,
-                data.ContainsKey("last_modified") ? data["last_modified"] : null)
         {
+            Title = data.ContainsKey("title") ? data["title"] : null;
+            Artist = data.ContainsKey("artist") ? data["artist"] : null;
+            Album = data.ContainsKey("album") ? data["album"] : null;
+            Date = data.ContainsKey("date") ? data["date"] : null;
+            Genre = data.ContainsKey("genre") ? data["genre"] : null;
+
+            if (data.ContainsKey("tracknumber"))
+            {
+                if (!int.TryParse(data["tracknumber"], out TrackIndex))
+                    TrackIndex = -1;
+            }
+            else
+                TrackIndex = -1;
+
+            if (data.ContainsKey("totaltracks"))
+            {
+                if (!int.TryParse(data["totaltracks"], out TrackCount))
+                    TrackCount = -1;
+            }
+            else
+                TrackCount = -1;
+
+            if (data.ContainsKey("discnumber"))
+            {
+                if (!int.TryParse(data["discnumber"], out DiscIndex))
+                    DiscIndex = -1;
+            }
+            else
+                DiscIndex = -1;
+
+            if (data.ContainsKey("discnumber"))
+            {
+                if (!int.TryParse(data["discnumber"], out DiscIndex))
+                    DiscIndex = -1;
+            }
+            else
+                DiscIndex = -1;
+
+            if (data.ContainsKey("totaldiscs"))
+            {
+                if (!int.TryParse(data["totaldiscs"], out DiscCount))
+                    DiscCount = -1;
+            }
+            else
+                DiscCount = -1;
+
+            Codec = data.ContainsKey("codec") ? data["codec"] : null;
+            CodecProfile = data.ContainsKey("codec_profile") ? data["codec_profile"] : null;
+            Filename = data.ContainsKey("filename") ? data["filename"] : null;
+            FilenameExtension = data.ContainsKey("filename_ext") ? data["filename_ext"] : null;
+            Directory = data.ContainsKey("directoryname") ? data["directoryname"] : null;
+            Path = data.ContainsKey("path") ? data["path"] : null;
+
+            if (data.ContainsKey("subsong"))
+            {
+                if (!int.TryParse(data["subsong"], out SubIndex))
+                    SubIndex = -1;
+            }
+            else
+                SubIndex = -1;
+
+            PathSort = data.ContainsKey("path_sort") ? data["path_sort"] : null;
+            Length = data.ContainsKey("length") ? data["length"] : null;
+            
+            if (data.ContainsKey("length_seconds"))
+            {
+                if (!int.TryParse(data["length_seconds"], out LengthSeconds))
+                    LengthSeconds = -1;
+            }
+            else
+                LengthSeconds = -1;
+            
+            if (data.ContainsKey("bitrate"))
+            {
+                if (!int.TryParse(data["bitrate"], out Bitrate))
+                    Bitrate = -1;
+            }
+            else
+                Bitrate = -1;
+
+            if (data.ContainsKey("channels"))
+            {
+                if (!int.TryParse(data["channels"], out Channels))
+                    Channels = -1;
+            }
+            else
+                Channels = -1;
+
+            if (data.ContainsKey("samplerate"))
+            {
+                if (!int.TryParse(data["samplerate"], out SampleRate))
+                    SampleRate = -1;
+            }
+            else
+                SampleRate = -1;
+
+            if (data.ContainsKey("filesize"))
+            {
+                if (!int.TryParse(data["filesize"], out Filesize))
+                    Filesize = -1;
+            }
+            else
+                Filesize = -1;
+
+            NaturalFilesize = data.ContainsKey("filesize_natural") ? data["filesize_natural"] : null;
+            LastModified = data.ContainsKey("last_modified") ? data["last_modified"] : null;
         }
     }
 }
